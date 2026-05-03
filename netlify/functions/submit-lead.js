@@ -16,18 +16,24 @@ exports.handler = async (event) => {
       whatsapp:   data.whatsapp   || ''
     });
 
-    // Server-side call — sem CORS, funciona de qualquer device
-    await fetch(SHEETS_URL + '?' + params.toString());
+    const url = SHEETS_URL + '?' + params.toString();
+    console.log('Calling:', url);
+
+    const res = await fetch(url, { redirect: 'follow' });
+    const text = await res.text();
+
+    console.log('Response status:', res.status);
+    console.log('Response body:', text);
 
     return {
       statusCode: 200,
       headers: { 'Access-Control-Allow-Origin': '*' },
-      body: JSON.stringify({ ok: true })
+      body: JSON.stringify({ ok: true, status: res.status, response: text })
     };
   } catch (err) {
     console.error('submit-lead error:', err);
     return {
-      statusCode: 200,
+      statusCode: 500,
       headers: { 'Access-Control-Allow-Origin': '*' },
       body: JSON.stringify({ ok: false, error: err.message })
     };
