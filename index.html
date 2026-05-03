@@ -928,26 +928,7 @@
 
     const payload = { ...answers };
 
-    // 1. Netlify Forms — primary, works on all devices
-    try {
-      await fetch('/', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: new URLSearchParams({
-          'form-name': 'captacao',
-          gestao:      payload.gestao     || '',
-          lojistas:    payload.lojistas   || '',
-          problema:    payload.problema   || '',
-          notafiscal:  payload.notafiscal || '',
-          querTestar:  payload.querTestar || '',
-          whatsapp:    payload.whatsapp   || ''
-        }).toString()
-      });
-    } catch (err) {
-      console.error('Netlify Forms error:', err);
-    }
-
-    // 2. Google Sheets via Netlify Function (server-side, funciona em todos os devices)
+    // Google Sheets via Netlify Function (server-side, sem CORS)
     try {
       await fetch('/.netlify/functions/submit-lead', {
         method: 'POST',
@@ -956,11 +937,6 @@
       });
     } catch (err) {
       console.error('Sheets proxy error:', err);
-      // fallback: image tag pra desktop
-      try {
-        const params = new URLSearchParams(payload);
-        new Image().src = SHEETS_WEBHOOK_URL + '?' + params.toString();
-      } catch (_) {}
     }
 
     showSuccess();
