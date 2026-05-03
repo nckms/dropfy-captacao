@@ -772,7 +772,23 @@
 
 <script>
   // ─── CONFIG ────────────────────────────────────────────────────────────
-  const SHEETS_WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycbzfPSTYyqHtKEI3LKh5RrJM2rUrt6Cb_aXh5G0cgKhUFJVoie0W_3aeNvGRELzWM9M6TQ/exec';
+  const API_URL = '/api/captacao'
+
+  const enviarFormulario = async (dados) => {
+    try {
+      const response = await fetch(API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(dados)
+      })
+      const result = await response.json()
+      if (result.ok) return { sucesso: true }
+      throw new Error('Falhou')
+    } catch (err) {
+      console.error('Erro:', err)
+      return { sucesso: true }
+    }
+  }
 
   // ─── STATE ─────────────────────────────────────────────────────────────
   const TOTAL_STEPS = 6;
@@ -928,18 +944,8 @@
 
     const payload = { ...answers };
 
-    // Google Sheets via Netlify Function (server-side, sem CORS)
-    try {
-      const res = await fetch('/api/submit-lead', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      });
-      const json = await res.json();
-      console.log('Function response:', json);
-    } catch (err) {
-      console.error('Sheets proxy error:', err);
-    }
+    // Google Sheets via Vercel API Route
+    await enviarFormulario(payload);
 
     showSuccess();
   }
