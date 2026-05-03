@@ -1,4 +1,4 @@
-const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbxlsNu4IeuYI-otZCG1wREp8Yfw79jLNHYPXIe12rzxGXdN2pU9coTx6fP7l8RXeErlCw/exec';
+const MAKE_WEBHOOK_URL = 'https://hook.us2.make.com/o9vrqrov1ns1ifpq4bjougs28alang';
 
 exports.handler = async (event) => {
   if (event.httpMethod !== 'POST') {
@@ -8,20 +8,19 @@ exports.handler = async (event) => {
   try {
     const data = JSON.parse(event.body);
 
-    const res = await fetch(SHEETS_URL, {
+    const res = await fetch(MAKE_WEBHOOK_URL, {
       method: 'POST',
-      redirect: 'follow',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data)
     });
 
     const text = await res.text();
-    console.log('Sheets response:', res.status, text);
+    console.log('Make response:', res.status, text);
 
     return {
       statusCode: 200,
       headers: { 'Access-Control-Allow-Origin': '*' },
-      body: JSON.stringify({ ok: true, status: res.status, response: text })
+      body: JSON.stringify({ ok: true })
     };
   } catch (err) {
     console.error('submit-lead error:', err);
