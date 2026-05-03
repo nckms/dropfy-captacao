@@ -1,4 +1,4 @@
-const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbxJWn3WBAZkn--_AVD5gVH6tRjkT4dkfA0IzsOFroQHBRuMkvMXhfYfv60wj4dfaRSOyA/exec';
+const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbxlsNu4IeuYI-otZCG1wREp8Yfw79jLNHYPXIe12rzxGXdN2pU9coTx6fP7l8RXeErlCw/exec';
 
 exports.handler = async (event) => {
   if (event.httpMethod !== 'POST') {
