@@ -1,4 +1,4 @@
-const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbzfPSTYyqHtKEI3LKh5RrJM2rUrt6Cb_aXh5G0cgKhUFJVoie0W_3aeNvGRELzWM9M6TQ/exec';
+const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbxJWn3WBAZkn--_AVD5gVH6tRjkT4dkfA0IzsOFroQHBRuMkvMXhfYfv60wj4dfaRSOyA/exec';
 
 exports.handler = async (event) => {
   if (event.httpMethod !== 'POST') {
@@ -7,23 +7,16 @@ exports.handler = async (event) => {
 
   try {
     const data = JSON.parse(event.body);
-    const params = new URLSearchParams({
-      gestao:     data.gestao     || '',
-      lojistas:   data.lojistas   || '',
-      problema:   data.problema   || '',
-      notafiscal: data.notafiscal || '',
-      querTestar: data.querTestar || '',
-      whatsapp:   data.whatsapp   || ''
+
+    const res = await fetch(SHEETS_URL, {
+      method: 'POST',
+      redirect: 'follow',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
     });
 
-    const url = SHEETS_URL + '?' + params.toString();
-    console.log('Calling:', url);
-
-    const res = await fetch(url, { redirect: 'follow' });
     const text = await res.text();
-
-    console.log('Response status:', res.status);
-    console.log('Response body:', text);
+    console.log('Sheets response:', res.status, text);
 
     return {
       statusCode: 200,
